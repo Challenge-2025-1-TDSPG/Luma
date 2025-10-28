@@ -1,6 +1,7 @@
 import FaqItem from '@/components/Faq/FaqItem';
-import { faqData } from '@/data/faqData';
-import { useEffect } from 'react';
+import { fetchFaqData } from '@/data/faqData';
+import type { FaqData } from '@/types/faq';
+import { useEffect, useState } from 'react';
 
 /**
  * Página de perguntas frequentes (FAQ)
@@ -10,21 +11,29 @@ import { useEffect } from 'react';
  * // Uso em rotas (React Router)
  * <Route path="/faq" element={<Faq />} />
  */
+
 export default function Faq() {
+  const [faqs, setFaqs] = useState<FaqData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     document.title = 'Perguntas Frequentes';
+    fetchFaqData()
+      .then(setFaqs)
+      .catch(() => setError('Erro ao carregar FAQs'))
+      .finally(() => setLoading(false));
   }, []);
+
   return (
     <main
       className='mx-auto w-full max-w-screen-lg px-6 sm:px-8 lg:px-10 xl:px-12 p-4'
       aria-label='Conteúdo principal de contatos'
     >
-      {/* mesmo container do Header: centralizado e limitado */}
       <div className='mx-auto w-full max-w-screen-xl'>
         <div
           className='
             bg-backSecondary box-border relative m-auto
-            /* tamanho/respiro da caixa por breakpoint */
             rounded-md sm:rounded-lg md:rounded-xl
             shadow-sm md:shadow-md
             p-3 sm:p-4 md:p-5 lg:p-6
@@ -47,11 +56,13 @@ export default function Faq() {
           >
             Encontre respostas rápidas sobre o uso da plataforma de Saúde Digital.
           </p>
-          {/* Lista de perguntas e respostas do FAQ */}
           <div className='mt-5'>
-            {faqData.map((item, idx) => (
-              <FaqItem key={idx} item={item} />
-            ))}
+            {loading && <div className='text-center py-8'>Carregando FAQs...</div>}
+            {error && <div className='text-center text-red-600 py-8'>{error}</div>}
+            {!loading && !error && faqs.length === 0 && (
+              <div className='text-center py-8'>Nenhuma FAQ encontrada.</div>
+            )}
+            {!loading && !error && faqs.map((item, idx) => <FaqItem key={idx} item={item} />)}
           </div>
         </div>
       </div>
