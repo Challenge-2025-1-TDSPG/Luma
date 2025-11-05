@@ -80,6 +80,21 @@ export function useAccessibility() {
     };
   });
 
+  // Alterna de forma exclusiva: clicar no mesmo modo desativa todos; clicar em outro substitui
+  const toggleExclusiveMode = (mode: VisualMode) => setPrefs(p => {
+    const cur = getCurrentMode(p);
+    if (cur === mode) {
+      return { ...p, grayscale: false, contrast: false, invert: false, light: false };
+    }
+    return {
+      ...p,
+      grayscale: mode === 'grayscale',
+      contrast:  mode === 'contrast',
+      invert:    mode === 'invert',
+      light:     mode === 'light',
+    };
+  });
+
   // TTS (Web Speech API)
   const tts = () => {
     const sel = window.getSelection()?.toString().trim();
@@ -95,5 +110,5 @@ export function useAccessibility() {
     (document.querySelector('div[vw-access-button] button') as HTMLButtonElement)?.click();
   };
 
-  return { prefs, setPrefs, incFont, decFont, toggle, reset, tts, libras, cycleVisualMode, setExclusiveMode };
+  return { prefs, setPrefs, incFont, decFont, toggle, reset, tts, libras, cycleVisualMode, setExclusiveMode, toggleExclusiveMode };
 }

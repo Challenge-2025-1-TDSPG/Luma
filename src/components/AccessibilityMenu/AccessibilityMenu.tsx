@@ -4,7 +4,7 @@ import { A11Y_MENU_ITEMS, type A11yActionKey } from '../../constants/a11y';
 import { useAccessibility } from '../../hooks/useAccessibiliuty';
 
 export default function AccessibilityMenu() {
-  const { incFont, decFont, toggle, reset, tts, libras, cycleVisualMode } = useAccessibility();
+  const { incFont, decFont, toggle, reset, tts, libras, toggleExclusiveMode } = useAccessibility();
   const [open, setOpen] = useState(false);
   const STORAGE_KEY = 'a11y:menuPos';
   const BTN_SIZE = 56;
@@ -79,11 +79,12 @@ export default function AccessibilityMenu() {
   const actions: Record<A11yActionKey, () => void> = {
     incFont,
     decFont,
-  // Estes quatro botões passam a avançar ciclicamente entre os modos visuais
-  grayscale: () => cycleVisualMode(),
-  contrast:  () => cycleVisualMode(),
-  invert:    () => cycleVisualMode(),
-  light:     () => cycleVisualMode(),
+  // Modos visuais são exclusivos: clicar em um substitui os demais;
+  // clicar novamente no mesmo desativa todos
+  grayscale: () => toggleExclusiveMode('grayscale'),
+  contrast:  () => toggleExclusiveMode('contrast'),
+  invert:    () => toggleExclusiveMode('invert'),
+  light:     () => toggleExclusiveMode('light'),
     readable:  () => toggle('readable'),
     tts,
     libras,

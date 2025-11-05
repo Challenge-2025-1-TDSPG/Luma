@@ -38,7 +38,7 @@ export default function MainMenu({ filter = '' }: MainMenuProps) {
       role='menubar'
       className='
     w-full flex flex-col gap-3 list-none m-0 py-2.5
-    lg:flex-row lg:flex-nowrap lg:whitespace-nowrap lg:max-w-full lg:overflow-x-auto
+    lg:flex-row lg:flex-nowrap lg:whitespace-nowrap lg:max-w-full lg:overflow-x-auto lg:px-2
     lg:gap-5
     xl:gap-8          
     [scrollbar-width:none] [-ms-overflow-style:none]
