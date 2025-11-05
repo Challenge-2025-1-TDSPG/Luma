@@ -9,6 +9,11 @@ import BtnInterno from '../Button/BtnInterno';
 export default function BoasVindasSection() {
   const { isLoggedIn, userData } = useAuth();
 
+  const firstName =
+    isLoggedIn && userData && userData.nome
+      ? String(userData.nome).trim().split(/\s+/)[0]
+      : undefined;
+
   return (
     <section className='w-full'>
       {/* Container alinhado com header/cards */}
@@ -25,7 +30,7 @@ export default function BoasVindasSection() {
                     text-fontPrimary font-semibold mb-3
                   '
                 >
-                  Bem-vindo(a), {userData.nome}!
+                  Bem-vindo(a), {firstName ?? userData?.nome}!
                 </h2>
 
                 <p
