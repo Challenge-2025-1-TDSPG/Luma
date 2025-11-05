@@ -87,5 +87,6 @@ Thumbs.db
 # *.map
 
 # ---------------------------------
-# GITHUB (se usar Actions e quiser manter, remova essa linha)
+# GITHUB / VERCEL
 .github/
+.vercel/
