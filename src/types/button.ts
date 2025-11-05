@@ -53,6 +53,8 @@ export interface BtnNavProps {
   to: string;
   children: ReactNode;
   className?: string;
+  'aria-label'?: string;
+  variant?: 'pill' | 'icon';
 }
 
 /**

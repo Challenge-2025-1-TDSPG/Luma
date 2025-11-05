@@ -96,7 +96,11 @@
   html.a11y-contrast .text-clikColor { color: #111827 !important; }
   html.a11y-contrast .text-fontTertiary { color: #f5f5f5 !important; }
   html.a11y-contrast :where(.bg-white, .bg-surface) .text-fontTertiary { color: #111827 !important; }
+  html.a11y-contrast :where(.bg-white, .bg-surface) .text-fontPrimary { color: #111827 !important; }
+  html.a11y-contrast :where(.bg-white, .bg-surface) .text-fontSecondary { color: #111827 !important; }
   html.a11y-contrast :where(.border):where([class*="rounded-"]):where([class*="p-"]) .text-fontTertiary { color: #111827 !important; }
+  html.a11y-contrast :where(.border):where([class*="rounded-"]):where([class*="p-"]) .text-fontPrimary { color: #111827 !important; }
+  html.a11y-contrast :where(.border):where([class*="rounded-"]):where([class*="p-"]) .text-fontSecondary { color: #111827 !important; }
   html.a11y-contrast .bg-backBtn { background-color: #ffd400 !important; color: #111827 !important; border: 2px solid #111827 !important; }
   html.a11y-contrast .hover\:bg-hoverBtn:hover { background-color: #ffea80 !important; color: #111827 !important; }
   html.a11y-contrast .bg-clikColor { background-color: #ffd400 !important; color: #111827 !important; border: 2px solid #111827 !important; }

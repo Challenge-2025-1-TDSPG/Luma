@@ -6,6 +6,8 @@ import BtnMenu from '../Button/BtnMenu';
 import BtnSearch from '../Button/BtnSearch';
 import MainMenu from './MainMenu';
 import SearchBox from './SearchBox';
+import BtnNav from '../Button/BtnNav';
+import { MdAccountCircle } from 'react-icons/md';
 
 /**
  * Componente de cabeçalho da aplicação
@@ -28,7 +30,7 @@ export default function Header() {
   };
 
   return (
-    <header className='w-full bg-gradient-to-b from-fromColor to-toColor'>
+    <header className='w-full bg-linear-to-b from-fromColor to-toColor'>
       <div className='mx-auto w-full max-w-screen-xl px-6 sm:px-8 lg:px-10 xl:px-12'>
         {/* linha do header */}
         <div
@@ -91,6 +93,18 @@ export default function Header() {
               <BtnMenu open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
             </div>
 
+            {/* Perfil (mobile) */}
+            <div className='lg:hidden'>
+              <BtnNav
+                to='/perfil'
+                aria-label='Perfil'
+                variant='icon'
+                className='h-12 w-12 text-white hover:text-white'
+              >
+                <MdAccountCircle size={28} aria-hidden />
+              </BtnNav>
+            </div>
+
             {/* Botão de logout (sempre por último, colado à direita) */}
             {isLoggedIn && <BtnLogoutHeader onClick={logout} className='ml-auto mr-1' />}
           </div>
@@ -115,7 +129,7 @@ export default function Header() {
           ref={menuRef}
           className={`mt-3 ${menuOpen ? 'block' : 'hidden'} lg:hidden`}
         >
-          <MainMenu filter={query} />
+          <MainMenu filter={query} excludeHrefs={['/perfil']} />
         </div>
       </div>
     </header>

@@ -1,5 +1,4 @@
 import { useAuth } from '@/hooks/useAuth';
-import BtnInterno from '../Button/BtnInterno';
 
 /**
  * Seção de boas-vindas da página inicial
@@ -61,19 +60,12 @@ export default function BoasVindasSection() {
                 >
                   Estamos aqui para te acompanhar em cada etapa do seu atendimento online no
                   Hospital das Clínicas. Se quiser, você pode preencher um breve formulário para que
-                  possamos oferecer um suporte ainda mais personalizado. É só clicar no botão abaixo
-                  quando estiver pronta!
+                  possamos oferecer um suporte ainda mais personalizado. Acesse pelo menu Perfil
+                  quando estiver pronta.
                 </p>
               </>
             )}
           </div>
-
-          {/* Botão só aparece quando não está logado */}
-          {!isLoggedIn && (
-            <BtnInterno to='/formulario' className='bg-clikColor hover:bg-hoverBtn'>
-              Preencher Formulário
-            </BtnInterno>
-          )}
         </div>
       </div>
     </section>
