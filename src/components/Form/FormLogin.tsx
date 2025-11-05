@@ -2,7 +2,7 @@ import BtnAcao from '@/components/Button/BtnAcao';
 import FormField from '@/components/Form/FormField';
 import InputField from '@/components/Form/InputField';
 import type { LoginFormData } from '@/types/form';
-import { setLoggedUser } from '@/utils/userStorage';
+import { setLoggedUser, setLoggedUserFull, saveUserToStorage } from '@/utils/userStorage';
 import { formatCPF, validateCPF } from '@/utils/validators';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -74,23 +74,83 @@ export default function FormLogin() {
       if (token) {
         localStorage.setItem('token', token);
       }
+
       setLoggedUser(payload.cpf);
+      const userRes = await fetch('https://luma-wu46.onrender.com/user', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      if (!userRes.ok) throw new Error('Erro ao buscar usuários.');
+
+      const users = await userRes.json();
+
+      // 🔹 Normaliza CPF (remove pontos e traços)
+      const normalizeCpf = (v: any = '') => String(v ?? '').replace(/\D/g, '');
+
+      // 🔹 Normaliza data (para o formato YYYY-MM-DD)
+      const normalizeDate = (v: any = '') => {
+        if (!v) return '';
+        const s = String(v);
+        if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+        try {
+          return new Date(s).toISOString().split('T')[0];
+        } catch {
+          return s;
+        }
+      };
+
+      // 🔹 Procura usuário com CPF e data de nascimento iguais
+      const found = (users as any[]).find(
+        (u) =>
+          normalizeCpf(u.cpf) === normalizeCpf(payload.cpf) &&
+          normalizeDate(u.birthDate) === normalizeDate(birthIso)
+      );
+
+      if (!found) {
+        console.warn('Usuário não encontrado pela combinação CPF + data.');
+      } else {
+        // 🔹 Salva o usuário logado completo (com cpf, passwordDate e id)
+        setLoggedUserFull({
+          id: String(found.id),
+          cpf: String(found.cpf),
+          passwordDate: normalizeDate(found.birthDate),
+        });
+        try {
+          saveUserToStorage({
+            nome: String(found.name || found.nome || ''),
+            cpf: String(found.cpf),
+            dataNascimento: normalizeDate(found.birthDate),
+            email: found.email || '',
+            telefone: (found.phone as string) || '',
+          });
+        } catch (err) {
+          console.warn('Falha ao salvar usuário localmente após login:', err);
+        }
+        window.dispatchEvent(new CustomEvent('auth-update'));
+      }
 
       reset();
       navigate('/', { replace: true });
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
+    } catch (err) {
+      console.error('Erro ao fazer login:', err);
       setErrorMessage('Erro de conexão. Tente novamente.');
     }
   };
 
   return (
     <main>
-      <h1 className='text-center mb-5 text-fontPrimary text-2xl font-bold'>Acesse suconta</h1>
-      <form id='form-login' onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-        <FormField label='CPF' required>
+      <h1 className="text-center mb-5 text-fontPrimary text-2xl font-bold">
+        Acesse sua conta
+      </h1>
+
+      <form id="form-login" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <FormField label="CPF" required>
           <Controller
-            name='cpf'
+            name="cpf"
             control={control}
             rules={{
               required: 'CPF é obrigatório',
@@ -98,15 +158,15 @@ export default function FormLogin() {
             }}
             render={({ field }) => (
               <InputField
-                type='text'
-                name='cpf'
-                id='cpf'
+                type="text"
+                name="cpf"
+                id="cpf"
                 value={field.value}
                 onChange={(v: any) => {
                   const val = typeof v === 'string' ? v : v?.target?.value ?? '';
                   field.onChange(formatCPF(val));
                 }}
-                placeholder='000.000.000-00'
+                placeholder="000.000.000-00"
                 required
                 maxLength={14}
                 isValid={errors.cpf ? false : field.value.length > 0}
@@ -116,9 +176,9 @@ export default function FormLogin() {
           />
         </FormField>
 
-        <FormField label='Data de nascimento' required>
+        <FormField label="Data de nascimento" required>
           <Controller
-            name='dataNascimento'
+            name="dataNascimento"
             control={control}
             rules={{
               required: 'Data de nascimento é obrigatória',
@@ -127,27 +187,23 @@ export default function FormLogin() {
                 const today = new Date();
                 const minDate = new Date('1900-01-01');
 
-                if (selectedDate > today) {
-                  return 'Data não pode ser futura';
-                }
-                if (selectedDate < minDate) {
-                  return 'Data muito antiga';
-                }
+                if (selectedDate > today) return 'Data não pode ser futura';
+                if (selectedDate < minDate) return 'Data muito antiga';
                 return true;
               },
             }}
             render={({ field }) => (
               <InputField
-                type='date'
-                name='dataNascimento'
-                id='dataNascimento'
+                type="date"
+                name="dataNascimento"
+                id="dataNascimento"
                 value={field.value}
                 onChange={(v: any) => {
                   const val = typeof v === 'string' ? v : v?.target?.value ?? '';
                   field.onChange(val);
                 }}
                 required
-                min='1900-01-01'
+                min="1900-01-01"
                 max={new Date().toISOString().split('T')[0]}
                 isValid={errors.dataNascimento ? false : !!field.value}
                 errorMessage={errors.dataNascimento?.message}
@@ -157,28 +213,28 @@ export default function FormLogin() {
         </FormField>
 
         <BtnAcao
-          type='submit'
-          id='botao-login-enviar'
+          type="submit"
+          id="botao-login-enviar"
           disabled={isSubmitting}
-          className='w-full mt-[15px] text-lg'
+          className="w-full mt-[15px] text-lg"
         >
           {isSubmitting ? 'ENTRANDO...' : 'ENTRAR'}
         </BtnAcao>
       </form>
 
       <BtnAcao
-        type='button'
-        id='botao-login-limpar'
+        type="button"
+        id="botao-login-limpar"
         onClick={() => reset()}
-        className='w-full mt-[10px] text-lg'
+        className="w-full mt-[10px] text-lg"
       >
         LIMPAR
       </BtnAcao>
 
       {errorMessage && (
         <div
-          id='mensagem-erro-login'
-          className='mt-4 p-3 bg-red-50 text-red-700 border border-red-200 rounded-md text-center'
+          id="mensagem-erro-login"
+          className="mt-4 p-3 bg-red-50 text-red-700 border border-red-200 rounded-md text-center"
         >
           {errorMessage}
         </div>
