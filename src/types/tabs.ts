@@ -18,6 +18,11 @@ export type Modo = 'app' | 'nav';
 export interface UseTabsProps {
   defaultMode?: Modo;
   idBase?: string;
+  /**
+   * Quando true, alterna automaticamente a tab ativa conforme o tamanho da tela (mobile/desktop).
+   * Padrão: false (respeita sempre o defaultMode e mudanças explícitas do componente)
+   */
+  autoDetect?: boolean;
 }
 
 /**

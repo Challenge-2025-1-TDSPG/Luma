@@ -1,12 +1,18 @@
 import BtnAcao from '@/components/Button/BtnAcao';
 import FormField from '@/components/Form/FormField';
 import InputField from '@/components/Form/InputField';
+import { useAuth } from '@/hooks/useAuth';
 import type { CadastroFormData } from '@/types/form';
-import { saveUserToStorage, setLoggedUser } from '@/utils/userStorage';
+import {
+  getUsersFromStorage,
+  saveUserToStorage,
+  setAllUsersToStorage,
+  setLoggedUser,
+} from '@/utils/userStorage';
 import { formatCPF, formatPhone, validateCPF } from '@/utils/validators';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 /**
  * Formulário de Cadastro
@@ -14,6 +20,9 @@ import { useNavigate } from 'react-router-dom';
  */
 export default function FormCadastro() {
   const navigate = useNavigate();
+  const { isLoggedIn, userData } = useAuth();
+  const [searchParams] = useSearchParams();
+  const isEditMode = useMemo(() => searchParams.get('edit') === '1', [searchParams]);
   const [errorMessage, setErrorMessage] = useState('');
 
   const {
@@ -32,6 +41,21 @@ export default function FormCadastro() {
     },
   });
 
+  // Prefill when in edit mode and user is logged in
+  useEffect(() => {
+    if (isEditMode && isLoggedIn && userData) {
+      // Assuming stored date is already yyyy-mm-dd
+      // Ensure CPF/phone stay formatted
+      reset({
+        nome: userData.nome || '',
+        cpf: userData.cpf || '',
+        dataNascimento: userData.dataNascimento || '',
+        email: userData.email || '',
+        telefone: userData.telefone || '',
+      });
+    }
+  }, [isEditMode, isLoggedIn, userData, reset]);
+
   /**
    * Manipula o envio do formulário de cadastro
    * Salva dados no localStorage e atualiza estado de autenticação
@@ -41,18 +65,39 @@ export default function FormCadastro() {
     setErrorMessage('');
 
     try {
-      // Salva novo usuário e faz login automaticamente
-      saveUserToStorage(data);
-      setLoggedUser(data.cpf);
+      if (isEditMode && isLoggedIn && userData) {
+        // Update existing user by original CPF
+        const users = getUsersFromStorage();
+        const idx = users.findIndex((u) => u.cpf === userData.cpf);
+        if (idx === -1) {
+          throw new Error('Usuário atual não encontrado para atualização.');
+        }
+        users[idx] = { ...data };
+        setAllUsersToStorage(users);
+        // If CPF changed, update session key
+        if (data.cpf !== userData.cpf) {
+          setLoggedUser(data.cpf);
+        }
+        // Notify and go back to Perfil
+        window.dispatchEvent(new CustomEvent('auth-update'));
+        navigate('/perfil', {
+          replace: true,
+          state: { message: 'Dados atualizados com sucesso!' },
+        });
+      } else {
+        // Salva novo usuário e faz login automaticamente
+        saveUserToStorage(data);
+        setLoggedUser(data.cpf);
 
-      // Notifica componentes sobre mudança de autenticação
-      window.dispatchEvent(new CustomEvent('auth-update'));
+        // Notifica componentes sobre mudança de autenticação
+        window.dispatchEvent(new CustomEvent('auth-update'));
 
-      reset();
-      navigate('/', {
-        replace: true,
-        state: { message: 'Cadastro realizado com sucesso!' },
-      });
+        reset();
+        navigate('/', {
+          replace: true,
+          state: { message: 'Cadastro realizado com sucesso!' },
+        });
+      }
     } catch (_error) {
       setErrorMessage('Erro ao realizar cadastro. Tente novamente.');
     }
@@ -61,7 +106,7 @@ export default function FormCadastro() {
   return (
     <main>
       <h1 className='text-center mb-5 text-fontPrimary text-2xl font-bold '>
-        Registre seu Cadastro
+        {isEditMode ? 'Atualizar dados' : 'Registre seu Cadastro'}
       </h1>
 
       <div className='alerta-obrigatorio bg-[color-mix(in_oklab,theme(colors.backBtn)_15%,white)] border-l-[5px] border-l-clikColor p-[10px_14px] mb-4 rounded-[5px] text-xs text-fontTertiary '>
@@ -216,17 +261,17 @@ export default function FormCadastro() {
           disabled={isSubmitting}
           className='w-full mt-[15px] text-lg '
         >
-          {isSubmitting ? 'ENVIANDO...' : 'ENVIAR'}
+          {isSubmitting ? (isEditMode ? 'SALVANDO...' : 'ENVIANDO...') : isEditMode ? 'SALVAR' : 'ENVIAR'}
         </BtnAcao>
       </form>
 
       <BtnAcao
         type='button'
         id='botao-nao-cadastrar'
-        onClick={() => navigate('/')}
-        className='w-full mt-[10px] text-lg bg-gray-300 text-fontTertiary hover:bg-gray-400'
+        onClick={() => navigate(isEditMode ? '/perfil' : '/')}
+  className='w-full mt-2.5 text-lg bg-gray-300 text-fontTertiary hover:bg-gray-400'
       >
-        Não quero me cadastrar
+        {isEditMode ? 'Cancelar' : 'Não quero me cadastrar'}
       </BtnAcao>
 
       {errorMessage && (

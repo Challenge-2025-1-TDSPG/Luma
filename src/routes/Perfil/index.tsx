@@ -45,7 +45,7 @@ export default function Perfil() {
         <section className='max-w-2xl mx-auto bg-[#FFF1E6] rounded-xl border p-6'>
           <p className='text-fontPrimary text-lg mb-4'>Você não está logado.</p>
           <div className='flex gap-3 justify-center'>
-            <BtnInterno to='/formulario' className='bg-clikColor hover:bg-hoverBtn inline-flex items-center gap-2'>
+            <BtnInterno to='/formulario/cadastro?edit=1' className='bg-clikColor hover:bg-hoverBtn inline-flex items-center gap-2'>
               <MdEdit size={20} aria-hidden='true' />
               <span>Fazer cadastro / login</span>
             </BtnInterno>
@@ -84,7 +84,7 @@ export default function Perfil() {
           </dl>
 
           <div className='mt-6 flex flex-wrap gap-3 justify-center'>
-            <BtnInterno to='/formulario' className='bg-clikColor hover:bg-hoverBtn inline-flex items-center gap-2'>
+            <BtnInterno to='/formulario/cadastro?edit=1' className='bg-clikColor hover:bg-hoverBtn inline-flex items-center gap-2'>
               <MdEdit size={20} aria-hidden='true' />
               <span>Atualizar dados</span>
             </BtnInterno>
