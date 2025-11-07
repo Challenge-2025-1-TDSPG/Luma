@@ -11,6 +11,7 @@ export interface HomeCard extends NavItem {
   Icon: IconType;
   title: string;
   description: string;
+  ctaLabel?: string;
 }
 
 export type CarouselOptions = {

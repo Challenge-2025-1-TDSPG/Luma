@@ -8,6 +8,18 @@ import { useAuth } from '@/hooks/useAuth';
 export default function BoasVindasSection() {
   const { isLoggedIn, userData } = useAuth();
 
+  // Retorna uma saudação baseada na hora atual
+  const getGreeting = () => {
+    try {
+      const hour = new Date().getHours();
+      if (hour >= 5 && hour < 12) return 'Bom dia';
+      if (hour >= 12 && hour < 18) return 'Boa tarde';
+      return 'Boa noite';
+    } catch (_) {
+      return 'Olá';
+    }
+  };
+
   return (
     <section className='w-full'>
       {/* Container alinhado com header/cards */}
@@ -16,7 +28,7 @@ export default function BoasVindasSection() {
         <div className='flex flex-col items-center text-center gap-4 py-6 sm:py-8 lg:py-12'>
           <div className='texto max-w-3xl'>
             {isLoggedIn && userData ? (
-              // Mensagem personalizada para usuário logado
+              // Mensagem personalizada para usuário logado (original)
               <>
                 <h2
                   className='
@@ -24,7 +36,7 @@ export default function BoasVindasSection() {
                     text-fontPrimary font-semibold mb-3
                   '
                 >
-                  Bem-vindo(a), {userData.nome}!
+                  {getGreeting()}, {userData.nome}!
                 </h2>
 
                 <p

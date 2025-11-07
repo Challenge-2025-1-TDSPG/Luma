@@ -42,10 +42,8 @@ export default function MainMenu({ filter = '', excludeHrefs = [] }: MainMenuPro
       role='menubar'
       className='
     w-full flex flex-col gap-3 list-none m-0 py-2.5
-    lg:flex-row lg:flex-nowrap lg:items-center lg:whitespace-nowrap lg:max-w-full lg:overflow-x-auto lg:px-2 lg:py-0
-    lg:gap-5
-    xl:gap-8          
-    [scrollbar-width:none] [-ms-overflow-style:none]
+    xl:flex-row xl:flex-nowrap xl:items-center xl:px-2 xl:py-0
+    xl:gap-4          
   '
     >
       {/* esconder scrollbar em WebKit */}
@@ -55,15 +53,15 @@ export default function MainMenu({ filter = '', excludeHrefs = [] }: MainMenuPro
         <li
           key={item.href}
           className='
-            w-full lg:w-auto
-            lg:shrink-0
+            w-full xl:w-auto
+            xl:shrink-0
           '
           role='none'
         >
           {item.external ? (
             <BtnExterno
               href={item.href}
-              className='block w-full lg:w-auto text-left lg:text-center'
+              className='block w-full xl:w-auto text-left xl:text-center'
             >
               {item.label}
             </BtnExterno>
@@ -85,7 +83,7 @@ export default function MainMenu({ filter = '', excludeHrefs = [] }: MainMenuPro
             <BtnNav
               to={item.href}
               aria-label={item.label}
-              className='block w-full lg:w-auto text-left lg:text-center'
+              className='block w-full xl:w-auto text-left xl:text-center'
             >
               {item.label}
             </BtnNav>

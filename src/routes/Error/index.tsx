@@ -9,8 +9,28 @@ export default function Error() {
   const err = useRouteError();
 
   const isResp = isRouteErrorResponse(err);
-  const status = isResp ? err.status : (err && (err as any).status) || 404;
-  const statusText = isResp ? err.statusText : (err && (err as any).message) || '';
+  const maybeStatus = isResp
+    ? (err as { status: unknown }).status
+    : ((err && (err as { status?: unknown }).status) ?? undefined);
+  const status: number = typeof maybeStatus === 'number' && !Number.isNaN(maybeStatus) ? maybeStatus : 404;
+  let statusText = '';
+  if (isRouteErrorResponse(err)) {
+    // err is narrowed to a RouteErrorResponse-like object
+    statusText = err.statusText ?? '';
+  } else if (err instanceof Error) {
+    // native Error
+    statusText = (err as Error).message ?? '';
+  } else if (err && typeof err === 'object' && 'message' in err) {
+    // plain object with a message property
+    const maybeMessage = (err as { message?: unknown }).message;
+    if (typeof maybeMessage === 'string') {
+      statusText = maybeMessage;
+    } else if (maybeMessage != null) {
+      statusText = String(maybeMessage);
+    } else {
+      statusText = '';
+    }
+  }
 
   useEffect(() => {
     document.title = `Erro ${status} • Luma`;
@@ -55,8 +75,6 @@ export default function Error() {
               Reportar problema
             </a>
           </div>
-
-          {/* Detalhes do erro removidos para não exibir stack traces em produção/dev */}
         </div>
       </div>
     </main>

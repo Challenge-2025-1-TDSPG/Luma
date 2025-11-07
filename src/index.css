@@ -24,7 +24,7 @@
 --color-fromColor: #D32F2F;
 --color-toColor:   #F59E0B;
 
-  --breakpoint-xs: (max-width: 600px);
+  --breakpoint-xs: 600px;
   --breakpoint-sm: 600px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;
@@ -36,6 +36,9 @@
   body,
   #root {
     height: 100%;
+    /* Evita espaços horizontais inesperados em alguns widths (remendo temporário).
+       Se houver conteúdo sendo cortado, iremos investigar o elemento causador. */
+    overflow-x: hidden;
   }
 
   #root {
@@ -50,9 +53,15 @@
   /* Aplica o gradiente em tela cheia especificamente na página de formulário */
   body.form-gradient {
     background-image: linear-gradient(to bottom, var(--color-fromColor), var(--color-toColor));
-    background-attachment: fixed;
+    /* Use scroll on small screens for better performance and to avoid mobile clipping.
+       Enable fixed attachment only on larger viewports via media query below. */
+    background-attachment: scroll;
     background-repeat: no-repeat;
     background-size: cover;
+  }
+  /* Enable fixed background on larger viewports where it's safe and expected */
+  @media (min-width: 768px) {
+    body.form-gradient { background-attachment: fixed; }
   }
   /* No alto contraste, removemos o gradiente para manter a legibilidade */
   html.a11y-contrast body.form-gradient {

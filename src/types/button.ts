@@ -60,6 +60,6 @@ export interface BtnNavProps {
 /**
  * Props para botão de pesquisa
  */
-export interface BtnSearchProps {
+export interface BtnSearchProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
 }

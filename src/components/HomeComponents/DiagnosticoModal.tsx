@@ -62,18 +62,18 @@ export default function DiagnosticModal({
         aria-modal="true"
         aria-labelledby="diag-title"
         className="absolute left-1/2 top-1/2 w-[min(92vw,760px)] -translate-x-1/2 -translate-y-1/2
-                   rounded-2xl border border-slate-200 bg-white p-4 shadow-xl
+                   rounded-2xl border border-borderColor bg-backSecondary p-4 shadow-xl
                    max-h-[90vh] overflow-hidden"
       >
         {/* Header */}
         <div className="flex items-center justify-between gap-3">
-          <h3 id="diag-title" className="text-lg font-semibold">
+          <h3 id="diag-title" className="text-lg font-semibold text-fontPrimary">
             {title}
           </h3>
           <button
             ref={closeBtnRef}
             onClick={onClose}
-            className="rounded-lg border px-3 py-1.5 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="rounded-lg border border-borderColor px-3 py-1.5 hover:bg-backPrimary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-clikColor"
           >
             Fechar
           </button>
@@ -87,8 +87,8 @@ export default function DiagnosticModal({
             return (
               <div
                 key={s.label}
-                className={`flex items-center justify-center gap-2 rounded-lg py-2
-                            ${active ? "bg-[#FFE4D6] text-amber-800" : "bg-slate-50"}`}
+                className={`flex items-center justify-center gap-2 rounded-lg py-2 px-2
+                            ${active ? "bg-clikColor text-white" : "bg-backPrimary text-fontTertiary"}`}
                 aria-current={active ? "step" : undefined}
               >
                 {Icon ? <Icon aria-hidden /> : null}
@@ -107,7 +107,7 @@ export default function DiagnosticModal({
           <button
             disabled={stepIndex === 0}
             onClick={() => setStepIndex((i) => Math.max(0, i - 1))}
-            className="rounded-lg px-3 py-1.5 border disabled:opacity-50 hover:bg-slate-50"
+            className="rounded-lg px-3 py-1.5 border border-borderColor disabled:opacity-50 hover:bg-backPrimary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-clikColor"
           >
             Voltar
           </button>
@@ -115,7 +115,7 @@ export default function DiagnosticModal({
           <div className="flex items-center gap-2">
             {/* Use este botão se seu componente não tiver callback */}
             {!done[stepIndex] && (
-              <button onClick={markCurrentDone} className="rounded-lg px-3 py-1.5 border hover:bg-slate-50">
+              <button onClick={markCurrentDone} className="rounded-lg px-3 py-1.5 border border-borderColor hover:bg-backPrimary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-clikColor">
                 Marcar como concluído
               </button>
             )}
@@ -126,7 +126,7 @@ export default function DiagnosticModal({
                 if (isLast) return onClose();
                 setStepIndex((i) => Math.min(steps.length - 1, i + 1));
               }}
-              className="rounded-lg px-3 py-1.5 bg-clikColor text-white disabled:opacity-50 hover:brightness-95"
+              className="rounded-lg px-3 py-1.5 bg-clikColor text-white disabled:opacity-50 hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-clikColor"
             >
               {isLast ? 'Finalizar' : 'Próximo'}
             </button>
