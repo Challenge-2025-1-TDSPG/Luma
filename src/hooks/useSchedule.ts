@@ -1,10 +1,6 @@
 import type { Reminder } from '@/types/reminder';
 import { formatDate } from '@/utils/calendarUtils';
-import {
-  getUserRemindersFromStorage,
-  migrateOldReminders,
-  setUserRemindersToStorage,
-} from '@/utils/reminderStorage';
+import {setUserRemindersToStorage} from '@/utils/reminderStorage';
 import { getLoggedUser, getLoggedUserFull } from '@/utils/userStorage';
 import { useEffect, useState } from 'react';
 
@@ -85,30 +81,62 @@ export function useSchedule() {
    * Carrega os lembretes do usuário logado ao inicializar o componente
    */
   useEffect(() => {
-    const loadUserReminders = () => {
-      // Migra lembretes antigos sem userCpf (limpa dados incompatíveis)
-      migrateOldReminders();
+  const loadUserReminders = async () => {
+    const loggedFull = getLoggedUserFull();
+    const userId = loggedFull && loggedFull.id ? Number(loggedFull.id) : undefined;
+    const token = localStorage.getItem('token');
 
-      const loggedUserCpf = getLoggedUser();
-      if (loggedUserCpf) {
-        const userReminders = getUserRemindersFromStorage(loggedUserCpf);
-        setReminders(userReminders);
-      } else {
-        // Se não há usuário logado, limpa lembretes da interface
+    if (!userId) {
+      console.warn('Nenhum usuário logado; limpando lembretes.');
+      setReminders([]);
+      return;
+    }
+
+    try {
+      const res = await fetch('https://luma-wu46.onrender.com/EmailReminder', {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error('Erro ao buscar lembretes da API:', res.status, text);
         setReminders([]);
+        return;
       }
-    };
 
+      const data = await res.json();
+
+      // filtra só os lembretes do usuário logado
+      const userReminders = data
+        .filter((r: any) => r.userId === userId)
+        .map((r: any) => ({
+          date: r.dateReminder,
+          time: r.timeReminder.slice(0, 5),
+          description: r.descriptionReminder,
+          userCpf: getLoggedUser(),
+        }));
+
+      setReminders(userReminders);
+    } catch (err) {
+      console.error('Erro ao carregar lembretes da API:', err);
+      setReminders([]);
+    }
+  };
+
+  loadUserReminders();
+
+  // Escuta login/logout
+  const handleAuthUpdate = () => {
     loadUserReminders();
+  };
 
-    // Escuta eventos de mudança de autenticação
-    const handleAuthUpdate = () => {
-      loadUserReminders();
-    };
+  window.addEventListener('auth-update', handleAuthUpdate);
+  return () => window.removeEventListener('auth-update', handleAuthUpdate);
+}, []);
 
-    window.addEventListener('auth-update', handleAuthUpdate);
-    return () => window.removeEventListener('auth-update', handleAuthUpdate);
-  }, []);
 
   /**
    * Sincroniza os lembretes do usuário logado com o localStorage sempre que houver mudanças
