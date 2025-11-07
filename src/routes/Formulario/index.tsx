@@ -57,6 +57,7 @@ export default function Formulario() {
           app={<FormularioCadastro />}
           nav={<Login />}
           className='w-full'
+          autoDetect={false}
           onChangeMode={(mode) => {
             navigate(`/formulario/${mode === 'app' ? 'cadastro' : 'login'}`, {
               replace: true,
