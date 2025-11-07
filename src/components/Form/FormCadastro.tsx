@@ -8,6 +8,7 @@ import {
   saveUserToStorage,
   setAllUsersToStorage,
   setLoggedUser,
+  getLoggedUserFull,
 } from '@/utils/userStorage';
 import { formatCPF, formatPhone, validateCPF } from '@/utils/validators';
 import { useEffect, useMemo, useState } from 'react';
@@ -74,7 +75,70 @@ export default function FormCadastro() {
         birthDate: data.dataNascimento,
         phone: data.telefone,
       };
+    
+      if (isEditMode) {
+        const logged = getLoggedUserFull();
+        const userId = logged?.id;
+        if (!userId) {
+          setErrorMessage('ID do usuário não encontrado para edição.');
+          return;
+        }
 
+        const token = localStorage.getItem('token');
+
+        const res = await fetch(`https://luma-wu46.onrender.com/user/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const responseData = await res.json().catch(() => null);
+
+        if (!res.ok) {
+          const msg =
+            (responseData && (responseData.message || responseData.error)) ||
+            'Erro ao atualizar usuário.';
+          setErrorMessage(msg);
+          return;
+        }
+
+        try {
+          const users = getUsersFromStorage();
+          const normCpf = payload.cpf;
+          const updated = users.map((u) =>
+            u.cpf.replace(/\D/g, '') === normCpf
+              ? {
+                  nome: data.nome,
+                  cpf: normCpf,
+                  dataNascimento: data.dataNascimento,
+                  email: data.email || '',
+                  telefone: data.telefone,
+                }
+              : u
+          );
+          if (!updated.find((u) => u.cpf.replace(/\D/g, '') === normCpf)) {
+            updated.push({
+              nome: data.nome,
+              cpf: normCpf,
+              dataNascimento: data.dataNascimento,
+              email: data.email || '',
+              telefone: data.telefone,
+            });
+          }
+          setAllUsersToStorage(updated);
+        } catch (err) {
+          console.warn('Falha ao atualizar usuário localmente:', err);
+        }
+        window.dispatchEvent(new CustomEvent('auth-update'));
+        reset();
+        navigate('/perfil', { replace: true, state: { message: 'Dados atualizados com sucesso!' } });
+        return;
+      }
+
+      // Caso seja criação 
       const res = await fetch('https://luma-wu46.onrender.com/user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -97,9 +161,9 @@ export default function FormCadastro() {
       }
 
       try {
-      saveUserToStorage({
-        ...data,
-        cpf: payload.cpf,
+        saveUserToStorage({
+          ...data,
+          cpf: payload.cpf,
         });
       } catch (err) {
         console.error('Falha ao salvar usuário localmente:', err);
