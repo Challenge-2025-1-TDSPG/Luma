@@ -5,16 +5,31 @@ import type { LoginFormData } from '@/types/form';
 import { setLoggedUser, setLoggedUserFull, saveUserToStorage } from '@/utils/userStorage';
 import { formatCPF, validateCPF } from '@/utils/validators';
 import { useState } from 'react';
+import Spinner from '@/components/Spinner/Spinner';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-/**
- * Formulário de Login
- * Permite acesso à aplicação usando CPF e data de nascimento
- */
+interface LoginResponse {
+  token?: string;
+  accessToken?: string;
+  message?: string;
+  error?: string;
+}
+
+interface UserData {
+  id: string | number;
+  cpf: string;
+  birthDate: string;
+  name?: string;
+  nome?: string;
+  email?: string;
+  phone?: string;
+}
+
 export default function FormLogin() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
+  const [isNavigatingToHome, setIsNavigatingToHome] = useState(false);
 
   const {
     control,
@@ -31,7 +46,8 @@ export default function FormLogin() {
 
   const onSubmit = async (data: LoginFormData) => {
     setErrorMessage('');
-    const onlyDigits = (v: any = '') => String(v ?? '').replace(/\D/g, '');
+    setIsNavigatingToHome(true);
+    const onlyDigits = (v: unknown = '') => String(v ?? '').replace(/\D/g, '');
 
     try {
       const birthIso =
@@ -54,7 +70,7 @@ export default function FormLogin() {
       });
 
       const text = await res.text();
-      let responseData: any = null;
+      let responseData: LoginResponse | null = null;
       try {
         responseData = JSON.parse(text);
       } catch {
@@ -67,6 +83,7 @@ export default function FormLogin() {
           (responseData && (responseData.message || responseData.error)) ||
           (res.status === 401 ? 'Credenciais inválidas.' : 'Erro ao autenticar.');
         setErrorMessage(msg);
+        setIsNavigatingToHome(false);
         return;
       }
 
@@ -84,15 +101,16 @@ export default function FormLogin() {
         },
       });
 
-      if (!userRes.ok) throw new Error('Erro ao buscar usuários.');
+      if (!userRes.ok) {
+        setIsNavigatingToHome(false);
+        throw new Error('Erro ao buscar usuários.');
+      }
 
-      const users = await userRes.json();
+      const users = await userRes.json() as UserData[];
 
-      // 🔹 Normaliza CPF (remove pontos e traços)
-      const normalizeCpf = (v: any = '') => String(v ?? '').replace(/\D/g, '');
+      const normalizeCpf = (v: string = '') => String(v ?? '').replace(/\D/g, '');
 
-      // 🔹 Normaliza data (para o formato YYYY-MM-DD)
-      const normalizeDate = (v: any = '') => {
+      const normalizeDate = (v: string = '') => {
         if (!v) return '';
         const s = String(v);
         if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
@@ -103,8 +121,7 @@ export default function FormLogin() {
         }
       };
 
-      // 🔹 Procura usuário com CPF e data de nascimento iguais
-      const found = (users as any[]).find(
+      const found = users.find(
         (u) =>
           normalizeCpf(u.cpf) === normalizeCpf(payload.cpf) &&
           normalizeDate(u.birthDate) === normalizeDate(birthIso)
@@ -113,7 +130,6 @@ export default function FormLogin() {
       if (!found) {
         console.warn('Usuário não encontrado pela combinação CPF + data.');
       } else {
-        // 🔹 Salva o usuário logado completo (com cpf, passwordDate e id)
         setLoggedUserFull({
           id: String(found.id),
           cpf: String(found.cpf),
@@ -133,16 +149,22 @@ export default function FormLogin() {
         window.dispatchEvent(new CustomEvent('auth-update'));
       }
 
-      reset();
-      navigate('/', { replace: true });
+  reset();
+  setTimeout(() => navigate('/', { replace: true }), 300);
     } catch (err) {
       console.error('Erro ao fazer login:', err);
       setErrorMessage('Erro de conexão. Tente novamente.');
+      setIsNavigatingToHome(false);
     }
   };
 
   return (
     <main>
+      {isNavigatingToHome && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-white/70'>
+          <Spinner size='lg' message='Redirecionando...' />
+        </div>
+      )}
       <h1 className="text-center mb-5 text-fontPrimary text-2xl font-bold">
         Acesse sua conta
       </h1>
@@ -162,7 +184,7 @@ export default function FormLogin() {
                 name="cpf"
                 id="cpf"
                 value={field.value}
-                onChange={(v: any) => {
+                onChange={(v: string | React.ChangeEvent<HTMLInputElement>) => {
                   const val = typeof v === 'string' ? v : v?.target?.value ?? '';
                   field.onChange(formatCPF(val));
                 }}
@@ -198,7 +220,7 @@ export default function FormLogin() {
                 name="dataNascimento"
                 id="dataNascimento"
                 value={field.value}
-                onChange={(v: any) => {
+                onChange={(v: string | React.ChangeEvent<HTMLInputElement>) => {
                   const val = typeof v === 'string' ? v : v?.target?.value ?? '';
                   field.onChange(val);
                 }}
@@ -226,7 +248,7 @@ export default function FormLogin() {
         type="button"
         id="botao-login-limpar"
         onClick={() => reset()}
-        className="w-full mt-[10px] text-lg"
+        className="w-full mt-2.5 text-lg"
       >
         LIMPAR
       </BtnAcao>
