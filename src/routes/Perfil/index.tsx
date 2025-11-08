@@ -67,7 +67,7 @@ export default function Perfil() {
           </div>
         </section>
       ) : (
-        <section className='max-w-2xl mx-auto bg-[#FFF1E6] rounded-xl border p-6'>
+        <section className='max-w-2xl mx-auto bg-backSecondary rounded-xl border border-borderColor p-6'>
           <dl className='grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4'>
             <div>
               <dt className='text-fontTertiary'>Nome</dt>
