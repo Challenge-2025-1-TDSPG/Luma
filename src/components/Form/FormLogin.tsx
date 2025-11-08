@@ -26,10 +26,6 @@ interface UserData {
   phone?: string;
 }
 
-/**
- * Formulário de Login
- * Permite acesso à aplicação usando CPF e data de nascimento
- */
 export default function FormLogin() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
@@ -51,7 +47,7 @@ export default function FormLogin() {
   const onSubmit = async (data: LoginFormData) => {
     setErrorMessage('');
     setIsNavigatingToHome(true);
-    const onlyDigits = (v: any = '') => String(v ?? '').replace(/\D/g, '');
+    const onlyDigits = (v: unknown = '') => String(v ?? '').replace(/\D/g, '');
 
     try {
       const birthIso =
@@ -112,10 +108,8 @@ export default function FormLogin() {
 
       const users = await userRes.json() as UserData[];
 
-      // 🔹 Normaliza CPF (remove pontos e traços)
       const normalizeCpf = (v: string = '') => String(v ?? '').replace(/\D/g, '');
 
-      // 🔹 Normaliza data (para o formato YYYY-MM-DD)
       const normalizeDate = (v: string = '') => {
         if (!v) return '';
         const s = String(v);
@@ -127,7 +121,6 @@ export default function FormLogin() {
         }
       };
 
-      // 🔹 Procura usuário com CPF e data de nascimento iguais
       const found = users.find(
         (u) =>
           normalizeCpf(u.cpf) === normalizeCpf(payload.cpf) &&
@@ -137,7 +130,6 @@ export default function FormLogin() {
       if (!found) {
         console.warn('Usuário não encontrado pela combinação CPF + data.');
       } else {
-        // 🔹 Salva o usuário logado completo (com cpf, passwordDate e id)
         setLoggedUserFull({
           id: String(found.id),
           cpf: String(found.cpf),

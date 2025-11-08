@@ -4,15 +4,10 @@ import Login from '@/components/Form/FormLogin';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-/**
- * Página de formulário com tabs para cadastro e login
- * Utiliza useParams para controle de navegação baseada em URL
- */
 export default function Formulario() {
   const { tab } = useParams<{ tab?: 'cadastro' | 'login' }>();
   const navigate = useNavigate();
 
-  // Validação e normalização do parâmetro tab
   const validTab = tab === 'cadastro' || tab === 'login' ? tab : 'cadastro';
   const isCadastro = validTab === 'cadastro';
   const defaultMode = isCadastro ? 'app' : 'nav';
@@ -20,12 +15,10 @@ export default function Formulario() {
   useEffect(() => {
     document.title = `LumaHC - ${isCadastro ? 'Cadastro' : 'Login'}`;
 
-    // Redireciona para tab válida se parâmetro inválido
     if (tab && tab !== 'cadastro' && tab !== 'login') {
       navigate('/formulario/cadastro', { replace: true });
     }
 
-    // Esconde Header/Footer enquanto estiver nesta página
     document.body.classList.add('hide-hf', 'form-gradient');
     return () => {
       document.body.classList.remove('hide-hf', 'form-gradient');
@@ -37,7 +30,7 @@ export default function Formulario() {
       aria-label='Conteúdo principal de formulário'
       className='
         containerNarrow w-full min-h-screen
-        bg-gradient-to-b from-fromColor to-toColor
+        bg-linear-to-b from-fromColor to-toColor
         flex justify-center items-start sm:items-center
         py-8 sm:py-12 lg:py-16
       '

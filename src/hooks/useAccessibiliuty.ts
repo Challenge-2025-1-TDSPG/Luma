@@ -17,19 +17,15 @@ export function useAccessibility() {
   useEffect(() => {
     const html = document.documentElement;
 
-  // zoom de fonte global (escala rem)
-  // Se 'readable' estiver ativo, aplica um ganho extra de ~12%
   const readableBoost = prefs.readable ? 1.12 : 1;
   html.style.fontSize = `${prefs.fontScale * readableBoost * 100}%`;
 
-    // flags via classes
     html.classList.toggle('a11y-grayscale', prefs.grayscale);
     html.classList.toggle('a11y-contrast',  prefs.contrast);
     html.classList.toggle('a11y-invert',    prefs.invert);
     html.classList.toggle('a11y-light',     prefs.light);
     html.classList.toggle('a11y-readable',  prefs.readable);
 
-    // Aplica filtros combinados de forma cumulativa (evita conflito de CSS)
     const filters: string[] = [];
     if (prefs.grayscale) filters.push('grayscale(1)');
     if (prefs.contrast)  filters.push('contrast(1.35)', 'saturate(1.2)');
@@ -39,7 +35,6 @@ export function useAccessibility() {
     save(STORAGE_KEY, prefs);
   }, [prefs]);
 
-  // ações básicas
   const incFont = () =>
     setPrefs(p => ({ ...p, fontScale: Math.min(1.6, +(p.fontScale + 0.1).toFixed(2)) }));
   const decFont = () =>
@@ -48,7 +43,6 @@ export function useAccessibility() {
     setPrefs(p => ({ ...p, [k]: !p[k] }));
   const reset = () => setPrefs(DEFAULT_A11Y);
 
-  // Define um modo exclusivo entre: none | grayscale | contrast | invert | light
   type VisualMode = 'none' | 'grayscale' | 'contrast' | 'invert' | 'light';
   const setExclusiveMode = (mode: VisualMode) => setPrefs(p => ({
     ...p,
@@ -66,7 +60,6 @@ export function useAccessibility() {
     return 'none';
   };
 
-  // Avança ciclicamente entre os modos visuais, independente do botão clicado
   const cycleVisualMode = () => setPrefs(p => {
     const order: VisualMode[] = ['none', 'grayscale', 'contrast', 'invert', 'light'];
     const cur = getCurrentMode(p);
@@ -80,7 +73,6 @@ export function useAccessibility() {
     };
   });
 
-  // Alterna de forma exclusiva: clicar no mesmo modo desativa todos; clicar em outro substitui
   const toggleExclusiveMode = (mode: VisualMode) => setPrefs(p => {
     const cur = getCurrentMode(p);
     if (cur === mode) {
@@ -95,7 +87,6 @@ export function useAccessibility() {
     };
   });
 
-  // TTS (Web Speech API)
   const tts = () => {
     const sel = window.getSelection()?.toString().trim();
     const text = sel || document.querySelector('main')?.textContent?.slice(0, 1200) || '';
@@ -105,22 +96,17 @@ export function useAccessibility() {
     speechSynthesis.cancel(); speechSynthesis.speak(u);
   };
 
-  // VLibras - Abre/fecha o widget de tradução em Libras
   const libras = () => {
-    // Método 1: Tenta clicar no botão (se já existir)
     const button = document.querySelector('[vw-access-button] button') as HTMLButtonElement;
     if (button) {
       button.click();
       return;
     }
 
-    // Método 2: Força a criação do botão fazendo o VLibras inicializar
     try {
       if (window.VLibras && window.VLibras.Widget) {
-        // Re-inicializa o widget para forçar a criação dos elementos
         new window.VLibras.Widget('https://vlibras.gov.br/app');
         
-        // Aguarda um pouco e tenta clicar novamente
         setTimeout(() => {
           const retryButton = document.querySelector('[vw-access-button] button') as HTMLButtonElement;
           if (retryButton) {
