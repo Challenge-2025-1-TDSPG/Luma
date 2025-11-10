@@ -11,7 +11,8 @@
   [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0.0-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
   [![React Icons](https://img.shields.io/badge/React_Icons-5.4.0-E91E63?style=for-the-badge&logo=react&logoColor=white)](https://react-icons.github.io/react-icons/)
   [![Quarkus](https://img.shields.io/badge/Quarkus-Java-4695EB?style=for-the-badge&logo=quarkus&logoColor=white)](https://quarkus.io/)
-  [![Render](https://img.shields.io/badge/Render-Deploy-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://render.com/)
+  [![Vercel](https://img.shields.io/badge/Vercel-Deploy-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
+  [![Render](https://img.shields.io/badge/Render-API-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://render.com/)
 </div>
 
 ---
@@ -46,12 +47,15 @@ Com um sistema de agendamento intuitivo, autenticação segura e tutoriais inter
 
 ### Backend API
 - **Quarkus (Java)**: Framework backend para APIs RESTful
-- **Render**: Plataforma de deploy (https://luma-wu46.onrender.com)
 - **⚠️ Funcionalidade completa**: A integração de lembretes com envio de email funciona apenas via localhost do Quarkus
 - **Endpoints disponíveis**:
   - `/user` - Gerenciamento de usuários
   - `/login` - Autenticação
   - `/EmailReminder` - Sistema de lembretes por email
+
+### Deploy e Hospedagem
+- **Vercel**: Plataforma de deploy do frontend (https://luma-teal.vercel.app)
+- **Render**: Plataforma de deploy do backend API (https://luma-wu46.onrender.com)
 
 ### Estilização
 - **TailwindCSS 4.0.0**: Framework CSS utilitário para estilização
@@ -415,7 +419,12 @@ O sistema atual usa **CPF + Data de Nascimento** como credenciais. Esta é uma a
 
 ---
 
-##  Links Importantes
+## 🔗 Links Importantes
+
+### 🌐 Deploy da Aplicação
+**🔗 [LumaHC - Vercel](https://luma-teal.vercel.app)**
+
+> Aplicação em produção hospedada no Vercel. Acesse para testar todas as funcionalidades da plataforma.
 
 ### 📂 Repositório GitHub
 **🔗 [LumaHC](https://github.com/Challenge-2025-1-TDSPG/LumaHC)**
