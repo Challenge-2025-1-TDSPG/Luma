@@ -283,11 +283,9 @@ export function useSchedule() {
 
   let effectiveEditingId = editingReminder?.idReminder ?? editingIdFromState;
 
-    // inicio do fluxo de envio (debug logs removidos em produção)
-
-    // Não fechar o modal nem resetar antes da resposta do servidor.
-    // A atualização do estado local (adicionar ou substituir) será feita APÓS o sucesso da requisição,
-    // para evitar que falhas no servidor deixem a UI inconsistente.
+  // Não fechar o modal nem resetar antes da resposta do servidor.
+  // A atualização do estado local (adicionar ou substituir) será feita APÓS o sucesso da requisição,
+  // para evitar que falhas no servidor deixem a UI inconsistente.
 
   // Envia lembrete para a API externa (não bloqueia o fluxo local)
   try {

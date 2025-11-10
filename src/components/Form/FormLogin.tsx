@@ -61,8 +61,6 @@ export default function FormLogin() {
         passwordDate: birthIso,
       };
 
-      
-
       const res = await fetch('https://luma-wu46.onrender.com/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
