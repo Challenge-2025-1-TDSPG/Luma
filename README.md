@@ -432,7 +432,7 @@ O sistema atual usa **CPF + Data de Nascimento** como credenciais. Esta é uma a
 > Repositório oficial do projeto contendo todo o código fonte, documentação técnica, histórico de commits e releases.
 
 ### 🎥 Vídeo Demonstrativo
-**🔗 [VIDEO](https://www.youtube.com/watch?v=QG2uodvpidY)**
+**🔗 [VIDEO](https://youtu.be/YbVsfcAf3M8)**
 
 > Vídeo completo demonstrando todas as funcionalidades da plataforma, processo de desenvolvimento e apresentação da equipe.
 
