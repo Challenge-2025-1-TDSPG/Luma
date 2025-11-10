@@ -91,13 +91,6 @@ Com um sistema de agendamento intuitivo, autenticação segura e tutoriais inter
   <img src="./src/assets/img/logo/lumahc.svg" alt="Logo LumaHC" width="150" />
 </div>
 
-### 📱 Avatares do Sistema
-<div align="center">
-  <img src="./src/assets/img/avatares/pessoa.svg" alt="Avatar Pessoa" width="60" />
-  <img src="./src/assets/img/avatares/celular.svg" alt="Avatar Celular" width="60" />
-  <img src="./src/assets/img/avatares/user.svg" alt="Avatar User" width="60" />
-</div>
-
 ### 🔧 Ícones da Interface
 - **React Icons**: Ícones vetoriais SVG para ações e navegação
 - **Navegação Temporal**: FaArrowLeft/Right para calendário
@@ -443,6 +436,6 @@ Este projeto foi desenvolvido para fins acadêmicos como parte do programa da FI
 ---
 
 <div align="center">
-  <p><strong>Desenvolvido com ❤️ pela equipe LumaHC</strong></p>
+  <p><strong>Desenvolvido com ❤️ pela equipe UsGuriDev</strong></p>
   <p><em>FIAP - Análise e Desenvolvimento de Sistemas - 2025</em></p>
 </div>
