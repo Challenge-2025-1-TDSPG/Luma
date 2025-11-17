@@ -9,7 +9,6 @@
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
   [![Vite](https://img.shields.io/badge/Vite-7.1.7-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
   [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0.0-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-  [![React Icons](https://img.shields.io/badge/React_Icons-5.4.0-E91E63?style=for-the-badge&logo=react&logoColor=white)](https://react-icons.github.io/react-icons/)
   [![Quarkus](https://img.shields.io/badge/Quarkus-Java-4695EB?style=for-the-badge&logo=quarkus&logoColor=white)](https://quarkus.io/)
   [![Vercel](https://img.shields.io/badge/Vercel-Deploy-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
   [![Render](https://img.shields.io/badge/Render-API-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://render.com/)
@@ -88,11 +87,17 @@ Com um sistema de agendamento intuitivo, autenticação segura e tutoriais inter
 
 ---
 
-## 🖼️ Galeria de Imagens
-
-### 🎨 Logo e Identidade Visual
+## 🎨 Logo e Identidade Visual
 <div align="center">
   <img src="./src/assets/img/logo/lumahc.svg" alt="Logo LumaHC" width="150" />
+</div>
+
+<div align="center">
+  <img src="./public/img/LumaMockup/1.png" alt="Mockup 1" width="900" />
+  <img src="./public/img/LumaMockup/2.png" alt="Mockup 2" width="900" />
+  <img src="./public/img/LumaMockup/3.png" alt="Mockup 3" width="900" />
+  <img src="./public/img/LumaMockup/4.png" alt="Mockup 4" width="900" />
+  <img src="./public/img/LumaMockup/5.png" alt="Mockup 5" width="900" />
 </div>
 
 ### 🔧 Ícones da Interface
