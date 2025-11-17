@@ -19,8 +19,13 @@
 
 ## 📋 Sobre o Projeto
 
-LumaHC é uma plataforma digital inovadora desenvolvida para simplificar o acesso à saúde digital, garantindo rapidez, cuidado e inclusão em cada teleconsulta.
-Com um sistema de agendamento intuitivo, autenticação segura e tutoriais interativos, LumaHC é a solução ideal para quem busca praticidade e eficiência no cuidado com a saúde.
+Durante o avanço da telemedicina, especialmente após a pandemia, uma grande parcela de pacientes, principalmente idosos, pessoas com deficiência e usuários com pouca familiaridade digital, passou a enfrentar dificuldades para acessar consultas online.
+Muitos não conseguem entrar no link enviado pelo hospital, não compreendem as instruções de acesso ou simplesmente esquecem o horário da consulta. Esse problema gera altas taxas de absenteísmo, desperdício de tempo e recursos dos profissionais, além de frustração e insegurança para o paciente.
+
+O Luma surge como uma solução intermediária entre o hospital e o paciente, oferecendo um ambiente simples, intuitivo e acessível que centraliza todas as etapas do processo de teleconsulta: lembretes automáticos, tutorial passo a passo, verificação de microfone e câmera e suporte direto via FAQ ou mensagens rápidas.
+Essa oportunidade foi identificada em parceria com o IMREA (Instituto de Medicina Física e Reabilitação do HC), que relatou dificuldades recorrentes de pacientes e cuidadores com o uso das ferramentas digitais atuais.
+
+O Luma tem como objetivo eliminar a barreira tecnológica na saúde digital, garantindo que o paciente consiga participar da consulta com autonomia e segurança.
 
 
 ### 🎯 Principais Funcionalidades
@@ -385,37 +390,6 @@ pnpm fix              # Corrige lint + formato
 - **Breakpoints Adaptativos**: sm, md, lg, xl
 - **Touch Friendly**: Elementos otimizados para toque
 - **Performance**: Carregamento otimizado
-
----
-
-## 🔒 Segurança e Considerações
-
-### ⚠️ Armazenamento de Dados (Projeto Acadêmico)
-Este é um **MVP desenvolvido para fins educacionais**. As seguintes práticas foram utilizadas para simplificar o desenvolvimento:
-
-**Dados armazenados no localStorage:**
-- ✅ Token de autenticação
-- ✅ CPF do usuário
-- ✅ Data de nascimento (usada como senha)
-- ✅ Nome, email e telefone
-- ✅ ID do usuário
-
-**⚠️ Limitações de Segurança:**
-- O localStorage é acessível via JavaScript, tornando-o vulnerável a ataques XSS
-- Dados sensíveis não são criptografados no cliente
-- Tokens não expiram automaticamente no cliente
-
-**✅ Recomendações para Produção:**
-- Usar **httpOnly cookies** para tokens de autenticação
-- Implementar **refresh tokens** com rotação automática
-- Armazenar apenas dados não-sensíveis no localStorage (preferências de UI, tema, etc.)
-- Implementar **hash bcrypt** para senhas reais (não usar data de nascimento)
-- Adicionar **HTTPS obrigatório** em produção
-- Implementar **rate limiting** nas APIs
-- Usar **Content Security Policy (CSP)** headers
-
-### 🔐 Autenticação Atual
-O sistema atual usa **CPF + Data de Nascimento** como credenciais. Esta é uma abordagem simplificada para o MVP acadêmico e não deve ser replicada em ambientes de produção.
 
 ---
 
